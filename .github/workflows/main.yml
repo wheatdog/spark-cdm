@@ -1,0 +1,17 @@
+on: [push]
+
+jobs:
+  hello_world_job:
+    runs-on: ubuntu-latest
+    name: A job to build spark-cdm
+    steps:
+        - uses: actions/checkout@v1
+        - uses: olafurpg/setup-scala@v5
+        - name: Compile
+          run: sbt 'set test in assembly := {}' clean assembly
+        - run: cp ./target/scala-2.11/*.jar /tmp/spark-cdm.jar
+        - name: Archive build
+          uses: actions/upload-artifact@v1
+          with:
+              name: spark-cdm.jar
+              path: /tmp/spark-cdm.jar
