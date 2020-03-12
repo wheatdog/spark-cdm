@@ -1,11 +1,10 @@
 package com.microsoft.cdm.utils
 
-import java.text.SimpleDateFormat
 import java.util.{Locale, TimeZone}
 import java.sql.Timestamp
 
 import org.apache.commons.lang.time.DateUtils
-import org.apache.spark.sql.catalyst.util.TimestampFormatter
+import org.apache.spark.sql.catalyst.util.{DateFormatter,TimestampFormatter}
 import org.apache.spark.sql.types._
 import org.apache.spark.unsafe.types.UTF8String
 
@@ -16,9 +15,8 @@ import org.apache.spark.unsafe.types.UTF8String
   */
 class DataConverter() extends Serializable {
 
-  val dateFormatter = new SimpleDateFormat(Constants.SINGLE_DATE_FORMAT)
   val timestampFormatter = TimestampFormatter(Constants.TIMESTAMP_FORMAT, TimeZone.getTimeZone("UTC"))
-
+  val dateFormatter = DateFormatter(Constants.SINGLE_DATE_FORMAT)
 
   val toSparkType: Map[CDMDataType.Value, DataType] = Map(
     CDMDataType.int64 -> LongType,
@@ -58,7 +56,7 @@ class DataConverter() extends Serializable {
   def dataToString(data: Any, dataType: DataType): String = {
     (dataType, data) match {
       case (_, null) => null
-      case (DateType, _) => dateFormatter.format(data)
+      case (DateType, _) => dateFormatter.format(data.asInstanceOf[Int])
       case (TimestampType, v: Number) => timestampFormatter.format(data.asInstanceOf[Long])
       case _ => data.toString
     }
