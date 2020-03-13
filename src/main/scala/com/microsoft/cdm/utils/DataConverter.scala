@@ -32,11 +32,11 @@ class DataConverter() extends Serializable {
     return dt match {
       case LongType => value.toLong
       case DoubleType => value.toDouble
-      case DecimalType(Constants.DECIMAL_PRECISION,0) => Decimal(value)
+      case DecimalType() => Decimal(value)
       case BooleanType => value.toBoolean
       case DateType => dateFormatter.parse(value)
       case TimestampType => timestampFormatter.parse(value)
-      case _ => UTF8String.fromString(value)
+      case StringType => UTF8String.fromString(value)
     }
   }
 
